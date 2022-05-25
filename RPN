@@ -1,0 +1,53 @@
+import edu.princeton.cs.algs4.StdIn;
+import edu.princeton.cs.algs4.StdOut;
+
+import java.util.Stack;
+
+public class RPN {
+    public static void main(String[] args) {
+        Stack<String> stack = new Stack<String>();
+        while (!StdIn.isEmpty()) {
+            String l = StdIn.readString();
+            // Mesmo grupo de prioridade
+            if (l.equals("+") || l.equals("-")) {
+                while (!stack.isEmpty()) {
+                    String r = stack.peek();
+                    // Ir tirando da pilha até ela esvaziar ou achar um "(",
+                    // que tem prioridade nula
+                    if (r.equals("(")) {
+                        break;
+                    }
+                    StdOut.print(stack.pop() + " ");
+                }
+                stack.push(l);
+                // Mesmo grupo de prioridade
+            } else if (l.equals("/") || l.equals("*") || l.equals("%")) {
+                while (!stack.isEmpty()) {
+                    String r = stack.peek();
+                    // Prioridade menor ou nula
+                    if (r.equals("(") || r.equals("-") || r.equals("+")) {
+                        break;
+                    }
+                    StdOut.print(stack.pop() + " ");
+                }
+                stack.push(l);
+                //Prioridade máxima
+            } else if (l.equals("^")) {
+                stack.push(l);
+            } else if (l.equals(")")) {
+                String r = stack.pop();
+                // Ir tirando símbolos da pilha até achar um "("
+                while (!r.equals("(")) {
+                    StdOut.print(r + " ");
+                    r = stack.pop();
+                }
+            } else if (l.equals("(")) stack.push(l);
+            else StdOut.print(l + " "); // Se for número é só printar direto
+        }
+        //Esvaziar a pilha depois de ler toda a entrada
+        while (!stack.empty()) {
+            StdOut.print(" " + stack.pop());
+        }
+        StdOut.println();
+    }
+}
